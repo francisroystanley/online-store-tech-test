@@ -1,6 +1,6 @@
 import axios from 'axios';
 import validateEnv from '../env.mjs';
-import { Product } from '@/graphql/generated';
+import { OriginalProduct } from '@/graphql/generated';
 
 const env = validateEnv();
 const apiClient = axios.create({
@@ -21,9 +21,8 @@ apiClient.interceptors.response.use(
 
 const api = {
   products: {
-    getAll: (): Promise<Product[]> => apiClient.get('/products'),
-    getById: (id: string): Promise<Product> => apiClient.get(`/products/${id}`),
-    getByCategory: (category: string): Promise<Product[]> => apiClient.get(`/products/category/${category}`),
+    getAll: (): Promise<OriginalProduct[]> => apiClient.get('/products'),
+    getById: (id: string): Promise<OriginalProduct> => apiClient.get(`/products/${id}`),
   },
 };
 

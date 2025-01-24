@@ -12,11 +12,7 @@ describe('CartContext', () => {
   });
 
   it('should throw error when useCartContext is used outside of CartProvider', () => {
-    jest.spyOn(React, 'useContext').mockReturnValue(null);
-
-    expect(() => {
-      renderHook(() => useCartContext());
-    }).toThrow('useCartContext must be used within a CartProvider');
+    expect(() => renderHook(() => useCartContext())).toThrow('useCartContext must be used within a CartProvider');
   });
 
   it('should render children', () => {

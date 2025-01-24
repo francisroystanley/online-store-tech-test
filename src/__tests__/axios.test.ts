@@ -26,12 +26,6 @@ describe('API Client', () => {
       expect(result).toEqual(mockProduct);
     });
 
-    it('should fetch products by category', async () => {
-      mock.onGet('/products/category/test-category').reply(200, mockProducts);
-      const result = await api.products.getByCategory('test-category');
-      expect(result).toEqual(mockProducts);
-    });
-
     it('should handle errors', async () => {
       mock.onGet('/products').reply(500);
       await expect(api.products.getAll()).rejects.toThrow();

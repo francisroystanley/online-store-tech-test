@@ -18,7 +18,7 @@ const CartSchema = object({
 
 type Cart = InferOutput<typeof CartSchema>;
 
-const CartContext = createContext<Cart>({ items: [] });
+const CartContext = createContext<Cart | null>(null);
 
 const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cart, setCart] = useState<Cart>({ items: [] });

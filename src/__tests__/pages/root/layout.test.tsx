@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
 import RootLayout from '@/app/layout';
+import { CartProvider } from '@/providers/cart.context';
 
 jest.mock('next/font/local', () => ({
   __esModule: true,
@@ -16,9 +17,11 @@ jest.mock('@/providers', () => ({
 describe('RootLayout', () => {
   it('renders children within Providers', () => {
     const { getByTestId } = render(
-      <RootLayout>
-        <div data-testid="child">Test Content</div>
-      </RootLayout>,
+      <CartProvider>
+        <RootLayout>
+          <div data-testid="child">Test Content</div>
+        </RootLayout>
+      </CartProvider>,
     );
 
     expect(getByTestId('providers')).toBeInTheDocument();
@@ -28,9 +31,11 @@ describe('RootLayout', () => {
 
   it('applies font classes and antialiased to body', () => {
     const { container } = render(
-      <RootLayout>
-        <div>Test Content</div>
-      </RootLayout>,
+      <CartProvider>
+        <RootLayout>
+          <div>Test Content</div>
+        </RootLayout>
+      </CartProvider>,
     );
     const body = container.querySelector('body');
 
@@ -39,9 +44,11 @@ describe('RootLayout', () => {
 
   it('sets correct lang attribute on html element', () => {
     const { container } = render(
-      <RootLayout>
-        <div>Test Content</div>
-      </RootLayout>,
+      <CartProvider>
+        <RootLayout>
+          <div>Test Content</div>
+        </RootLayout>
+      </CartProvider>,
     );
     const html = container.querySelector('html');
 
