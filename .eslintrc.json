@@ -1,0 +1,8 @@
+{
+  "plugins": ["@typescript-eslint", "react-hooks", "prettier"],
+  "extends": ["next/core-web-vitals", "next/typescript"],
+  "root": true,
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "warn"
+  }
+}

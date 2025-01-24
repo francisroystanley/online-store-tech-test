@@ -1,0 +1,13 @@
+type Product {
+  id: ID!
+  title: String!
+  price: Float!
+  category: String!
+  description: String!
+  image: String!
+}
+
+type Query {
+  products: [Product!]!
+  product(id: ID!): Product
+}

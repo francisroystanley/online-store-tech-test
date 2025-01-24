@@ -479,4 +479,19 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# production
+/build
+
+# misc
+*.pem
+
+# vercel
+.vercel
+
+# typescript
+next-env.d.ts
+
+# graphql
+src/graphql/generated.tsx
+
 # End of https://www.toptal.com/developers/gitignore/api/osx,windows,node,intellij,phpstorm,webstorm,visualstudiocode
