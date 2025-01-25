@@ -10,7 +10,7 @@ const ProductListing = async () => {
         data: { products },
       },
     } = await axios.post(
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/graphql`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/graphql`,
       { query: print(GetProductsDocument) },
       { headers: { 'Content-Type': 'application/json' } },
     );

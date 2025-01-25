@@ -57,7 +57,7 @@ describe('ProductListing', () => {
 
     expect(screen.getByTestId('product-grid')).toBeInTheDocument();
     expect(mockedAxios.post).toHaveBeenCalledWith(
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/graphql`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/graphql`,
       expect.any(Object),
       expect.any(Object),
     );
