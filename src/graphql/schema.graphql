@@ -17,6 +17,15 @@ type Product {
   reviews: Int!
 }
 
+type CartProduct {
+  id: ID!
+  title: String!
+  price: Float!
+  formattedPrice: String!
+  image: String!
+  quantity: Int!
+}
+
 type Query {
   products: [Product!]!
   product(id: ID!): Product

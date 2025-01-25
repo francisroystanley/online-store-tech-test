@@ -2,6 +2,10 @@ import { render } from '@testing-library/react';
 import RootLayout from '@/app/layout';
 import { CartProvider } from '@/providers/cart.context';
 
+jest.mock('lucide-react', () => ({
+  Trash2: () => <div data-testid="trash">Trash</div>,
+}));
+
 jest.mock('next/font/local', () => ({
   __esModule: true,
   default: () => ({

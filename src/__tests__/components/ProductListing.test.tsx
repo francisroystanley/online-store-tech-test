@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { render, screen } from '@testing-library/react';
 import ProductListing from '@/components/ProductListing';
+import { CartProvider } from '@/providers/cart.context';
 
 jest.mock('lucide-react', () => ({
   Star: () => <div data-testid="star-gray">Star</div>,
@@ -36,6 +37,10 @@ const mockProducts = [
 ];
 
 describe('ProductListing', () => {
+  const renderWithProvider = (component: React.ReactNode) => {
+    return render(<CartProvider>{component}</CartProvider>);
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -48,8 +53,7 @@ describe('ProductListing', () => {
         },
       },
     });
-
-    const { container } = render(await ProductListing());
+    const { container } = renderWithProvider(await ProductListing());
 
     expect(screen.getByTestId('product-grid')).toBeInTheDocument();
     expect(mockedAxios.post).toHaveBeenCalledWith(
@@ -66,14 +70,16 @@ describe('ProductListing', () => {
   it('renders error message when API call fails with Error instance', async () => {
     const errorMessage = 'Failed to fetch products';
     mockedAxios.post.mockRejectedValueOnce(new Error(errorMessage));
-    render(await ProductListing());
+
+    renderWithProvider(await ProductListing());
 
     expect(screen.getByText(`Error: ${errorMessage}`)).toBeInTheDocument();
   });
 
   it('renders generic error message when API call fails with non-Error', async () => {
     mockedAxios.post.mockRejectedValueOnce('Unknown error');
-    render(await ProductListing());
+
+    renderWithProvider(await ProductListing());
 
     expect(screen.getByText('Error: An error occurred')).toBeInTheDocument();
   });

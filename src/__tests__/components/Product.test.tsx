@@ -1,6 +1,19 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import Product from '@/components/Product';
 import { mockProduct } from '@/test-utils/fixtures';
+import { CartProvider } from '@/providers/cart.context';
+
+const mockAddToCart = jest.fn();
+
+jest.mock('@/providers/cart.context', () => ({
+  CartProvider: ({ children }: { children: React.ReactNode }) => children,
+  useCartContext: () => ({
+    addItem: mockAddToCart,
+    items: [],
+    totalItems: 0,
+    removeItem: jest.fn(),
+  }),
+}));
 
 jest.mock('lucide-react', () => ({
   Star: () => <div data-testid="star-gray">Star</div>,
@@ -16,8 +29,17 @@ jest.mock('next/image', () => ({
 }));
 
 describe('Product', () => {
+  beforeEach(() => {
+    mockAddToCart.mockClear();
+  });
+
+  const renderWithProvider = (component: React.ReactNode) => {
+    return render(<CartProvider>{component}</CartProvider>);
+  };
+
   it('renders product information correctly', () => {
-    render(<Product product={mockProduct} />);
+    renderWithProvider(<Product product={mockProduct} />);
+
     const stars = screen.getAllByTestId('star-gray');
 
     expect(screen.getByText(mockProduct.title)).toBeInTheDocument();
@@ -28,13 +50,19 @@ describe('Product', () => {
   });
 
   it('calls onAddToCart when Add to Cart button is clicked', () => {
-    const consoleSpy = jest.spyOn(console, 'log');
-    render(<Product product={mockProduct} />);
+    renderWithProvider(<Product product={mockProduct} />);
 
     const addToCartButton = screen.getByRole('button', { name: 'Add to Cart' });
     fireEvent.click(addToCartButton);
+    const mockCartProduct = {
+      id: mockProduct.id,
+      title: mockProduct.title,
+      price: mockProduct.price,
+      formattedPrice: mockProduct.formattedPrice,
+      image: mockProduct.image,
+      quantity: 1,
+    };
 
-    expect(consoleSpy).toHaveBeenCalledWith('Add to cart');
-    consoleSpy.mockRestore();
+    expect(mockAddToCart).toHaveBeenCalledWith(mockCartProduct);
   });
 });

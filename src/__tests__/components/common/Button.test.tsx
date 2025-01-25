@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import Button from '../../components/Button';
+import Button from '@/components/common/Button';
 
 describe('Button', () => {
   const mockOnClick = jest.fn();
@@ -10,6 +10,7 @@ describe('Button', () => {
 
   it('renders with default primary color', () => {
     render(<Button label="Click me" onClick={mockOnClick} />);
+
     const button = screen.getByRole('button', { name: 'Click me' });
 
     expect(button).toBeInTheDocument();
@@ -18,6 +19,7 @@ describe('Button', () => {
 
   it('renders with secondary color', () => {
     render(<Button label="Click me" color="secondary" onClick={mockOnClick} />);
+
     const button = screen.getByRole('button', { name: 'Click me' });
 
     expect(button).toHaveClass('bg-[#16A34A] text-white');
@@ -25,6 +27,7 @@ describe('Button', () => {
 
   it('renders with dark color', () => {
     render(<Button label="Click me" color="dark" onClick={mockOnClick} />);
+
     const button = screen.getByRole('button', { name: 'Click me' });
 
     expect(button).toHaveClass('bg-black text-white');
@@ -38,6 +41,7 @@ describe('Button', () => {
     unmount();
 
     render(<Button label="Click me" className="" onClick={mockOnClick} />);
+
     button = screen.getByRole('button', { name: 'Click me' });
 
     expect(button).toHaveClass('rounded-[10px] p-2 bg-[#4F46E5] text-white');
@@ -46,6 +50,7 @@ describe('Button', () => {
 
   it('calls onClick handler when clicked', () => {
     render(<Button label="Click me" onClick={mockOnClick} />);
+
     const button = screen.getByRole('button', { name: 'Click me' });
     fireEvent.click(button);
 

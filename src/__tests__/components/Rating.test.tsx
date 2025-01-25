@@ -9,6 +9,7 @@ jest.mock('lucide-react', () => ({
 describe('Rating', () => {
   it('renders correct number of gray stars', () => {
     render(<Rating rating={4} reviews={10} />);
+
     const grayStars = screen.getAllByTestId('star-gray');
 
     expect(grayStars).toHaveLength(9);
@@ -16,6 +17,7 @@ describe('Rating', () => {
 
   it('renders correct number of filled stars for integer rating', () => {
     render(<Rating rating={4} reviews={10} />);
+
     const filledStars = screen.getAllByTestId('star-gray').slice(0, 4);
 
     expect(filledStars).toHaveLength(4);
@@ -23,6 +25,7 @@ describe('Rating', () => {
 
   it('renders correct stars for half rating', () => {
     render(<Rating rating={3.5} reviews={10} />);
+
     const stars = screen.getAllByTestId('star-gray');
     const halfStar = screen.getByTestId('star-half');
 
@@ -38,6 +41,7 @@ describe('Rating', () => {
 
   it('handles zero rating', () => {
     render(<Rating rating={0} reviews={0} />);
+
     const stars = screen.getAllByTestId('star-gray');
     const halfStar = screen.queryByTestId('star-half');
 
@@ -47,6 +51,7 @@ describe('Rating', () => {
 
   it('handles maximum rating', () => {
     render(<Rating rating={5} reviews={100} />);
+
     const stars = screen.getAllByTestId('star-gray');
     const halfStar = screen.queryByTestId('star-half');
 
