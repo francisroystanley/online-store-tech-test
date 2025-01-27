@@ -33,4 +33,6 @@ const CartModal = ({ onCheckout, open, setOpen }: Props) => {
   );
 };
 
+export type { Props as CartModalProps };
+
 export default CartModal;

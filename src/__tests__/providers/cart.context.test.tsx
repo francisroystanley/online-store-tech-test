@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { render, renderHook, act } from '@testing-library/react';
 import { CartProvider, useCartContext } from '@/providers/cart.context';
-import { mockCartProduct } from '@/test-utils/fixtures';
+import { mockCartProduct } from '@/__mocks__/fixtures';
 
 describe('CartContext', () => {
   const wrapper = ({ children }: { children: ReactNode }) => <CartProvider>{children}</CartProvider>;
@@ -50,8 +50,8 @@ describe('CartContext', () => {
     });
 
     expect(result.current.items).toHaveLength(1);
-    expect(result.current.items[0].quantity).toBe(3);
-    expect(result.current.totalItems).toBe(3);
+    expect(result.current.items[0].quantity).toBe(4);
+    expect(result.current.totalItems).toBe(4);
   });
 
   it('should update item quantity within bounds (1-50)', () => {
@@ -115,19 +115,6 @@ describe('CartContext', () => {
     );
   });
 
-  it('should not add item with invalid quantity', () => {
-    const { result } = renderHook(() => useCartContext(), { wrapper });
-    const invalidItem = { ...mockCartProduct, quantity: -1 };
-
-    act(() => {
-      result.current.addItem(invalidItem);
-    });
-
-    expect(result.current.items).toHaveLength(0);
-    expect(result.current.totalItems).toBe(0);
-    expect(result.current.totalAmount).toBe(0);
-  });
-
   it('should maintain item order when updating quantities', () => {
     const { result } = renderHook(() => useCartContext(), { wrapper });
     const secondItem = { ...mockCartProduct, id: '2' };
@@ -183,5 +170,52 @@ describe('CartContext', () => {
 
     expect(result.current.items).toHaveLength(1);
     expect(result.current.items[0]).toEqual(mockCartProduct);
+  });
+
+  it('should clear all items from cart', () => {
+    const { result } = renderHook(() => useCartContext(), { wrapper });
+    const secondItem = { ...mockCartProduct, id: '2' };
+
+    act(() => {
+      result.current.addItem(mockCartProduct);
+      result.current.addItem(secondItem);
+    });
+
+    expect(result.current.items).toHaveLength(2);
+
+    act(() => {
+      result.current.clearCart();
+    });
+
+    expect(result.current.items).toHaveLength(0);
+    expect(result.current.totalItems).toBe(0);
+    expect(result.current.totalAmount).toBe(0);
+  });
+
+  it('should throw validation error for invalid cart item', () => {
+    const { result } = renderHook(() => useCartContext(), { wrapper });
+    const invalidItem = { ...mockCartProduct, price: -100 };
+
+    expect(() =>
+      act(() => {
+        result.current.addItem(invalidItem);
+      }),
+    ).toThrow();
+
+    expect(result.current.items).toHaveLength(0);
+  });
+
+  it('should initialize with provided initial cart', () => {
+    const initialCart = [mockCartProduct];
+    const customWrapper = ({ children }: { children: ReactNode }) => (
+      <CartProvider initialCart={initialCart}>{children}</CartProvider>
+    );
+
+    const { result } = renderHook(() => useCartContext(), { wrapper: customWrapper });
+
+    expect(result.current.items).toHaveLength(1);
+    expect(result.current.items[0]).toEqual(mockCartProduct);
+    expect(result.current.totalItems).toBe(mockCartProduct.quantity);
+    expect(result.current.totalAmount).toBe(mockCartProduct.price * mockCartProduct.quantity);
   });
 });

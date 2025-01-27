@@ -1,15 +1,13 @@
 'use client';
 
-import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import { ApolloProvider } from '@apollo/client';
+import createApolloClient from '@/lib/apollo';
 
 type Props = {
   children: React.ReactNode;
 };
 
-const client = new ApolloClient({
-  uri: '/api/graphql',
-  cache: new InMemoryCache(),
-});
+const client = createApolloClient();
 
 const Provider = ({ children }: Props) => {
   return <ApolloProvider client={client}>{children}</ApolloProvider>;

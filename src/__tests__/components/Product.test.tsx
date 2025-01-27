@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import Product from '@/components/Product';
-import { mockProduct } from '@/test-utils/fixtures';
+import { mockProduct } from '@/__mocks__/fixtures';
 import { CartProvider } from '@/providers/cart.context';
 
 const mockAddToCart = jest.fn();

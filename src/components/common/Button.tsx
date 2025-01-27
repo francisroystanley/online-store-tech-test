@@ -1,13 +1,13 @@
-import { useMemo } from 'react';
+import { ButtonHTMLAttributes, useMemo } from 'react';
 
-type Props = {
+type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   className?: string;
   color?: 'primary' | 'secondary' | 'dark';
   label: string;
   onClick: () => void;
 };
 
-const Button = ({ className, color = 'primary', label, onClick }: Props) => {
+const Button = ({ className, color = 'primary', label, ...props }: Props) => {
   const btnClassName = useMemo(() => {
     const baseClasses = 'rounded-[10px] p-2';
     const colorClasses = {
@@ -27,7 +27,7 @@ const Button = ({ className, color = 'primary', label, onClick }: Props) => {
   }, [className, color]);
 
   return (
-    <button className={btnClassName} onClick={onClick}>
+    <button className={btnClassName} {...props}>
       <span className="font-bold text-sm leading-[17px]">{label}</span>
     </button>
   );

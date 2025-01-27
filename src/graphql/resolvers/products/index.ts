@@ -1,12 +1,7 @@
 import { Resolvers } from '@apollo/client';
 import { api } from '@/lib/api';
 import { Product } from '@/graphql/generated';
-
-const formatPrice = (price: number) => `$${price.toFixed(2)}`;
-
-const generateRating = () => Math.floor(Math.random() * 10) * 0.5 + 0.5;
-
-const generateReviews = () => Math.floor(Math.random() * 100) + 1;
+import { formatPrice, generateRating, generateReviews } from '@/utils';
 
 const resolvers: Resolvers = {
   Query: {

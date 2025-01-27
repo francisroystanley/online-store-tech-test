@@ -2,7 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 import { Product } from '@/graphql/generated';
 import productResolvers from '@/graphql/resolvers/products';
 import { api } from '@/lib/api';
-import { mockProduct, mockProducts } from '@/test-utils/fixtures';
+import { mockProduct, mockProducts } from '@/__mocks__/fixtures';
 
 jest.mock('@/lib/api');
 

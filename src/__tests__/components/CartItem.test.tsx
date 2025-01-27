@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import CartItem from '@/components/CartItem';
 import { useCartContext } from '@/providers/cart.context';
-import { mockCartProduct } from '@/test-utils/fixtures';
+import { mockCartProduct } from '@/__mocks__/fixtures';
 
 jest.mock('@/providers/cart.context');
 

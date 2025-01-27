@@ -1,5 +1,5 @@
 import axios from 'axios';
-import validateEnv from '../env.mjs';
+import validateEnv from '@/env.mjs';
 import { OriginalProduct } from '@/graphql/generated';
 
 const env = validateEnv();

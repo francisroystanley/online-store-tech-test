@@ -1,5 +1,5 @@
 import { CartProduct, Product } from '@/graphql/generated';
-import { formatPrice } from '@/graphql/resolvers/products';
+import { formatPrice } from '@/utils';
 
 const mockCartProduct: CartProduct = {
   id: '1',

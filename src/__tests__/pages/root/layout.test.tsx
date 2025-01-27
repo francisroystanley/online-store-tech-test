@@ -1,6 +1,7 @@
 import { render } from '@testing-library/react';
 import RootLayout from '@/app/layout';
 import { CartProvider } from '@/providers/cart.context';
+import { MockedProvider } from '@apollo/client/testing';
 
 jest.mock('lucide-react', () => ({
   Trash2: () => <div data-testid="trash">Trash</div>,
@@ -21,11 +22,13 @@ jest.mock('@/providers', () => ({
 describe('RootLayout', () => {
   it('renders children within Providers', () => {
     const { getByTestId } = render(
-      <CartProvider>
-        <RootLayout>
-          <div data-testid="child">Test Content</div>
-        </RootLayout>
-      </CartProvider>,
+      <MockedProvider>
+        <CartProvider>
+          <RootLayout>
+            <div data-testid="child">Test Content</div>
+          </RootLayout>
+        </CartProvider>
+      </MockedProvider>,
     );
 
     expect(getByTestId('providers')).toBeInTheDocument();
@@ -35,11 +38,13 @@ describe('RootLayout', () => {
 
   it('applies font classes and antialiased to body', () => {
     const { container } = render(
-      <CartProvider>
-        <RootLayout>
-          <div>Test Content</div>
-        </RootLayout>
-      </CartProvider>,
+      <MockedProvider>
+        <CartProvider>
+          <RootLayout>
+            <div>Test Content</div>
+          </RootLayout>
+        </CartProvider>
+      </MockedProvider>,
     );
     const body = container.querySelector('body');
 
@@ -48,11 +53,13 @@ describe('RootLayout', () => {
 
   it('sets correct lang attribute on html element', () => {
     const { container } = render(
-      <CartProvider>
-        <RootLayout>
-          <div>Test Content</div>
-        </RootLayout>
-      </CartProvider>,
+      <MockedProvider>
+        <CartProvider>
+          <RootLayout>
+            <div>Test Content</div>
+          </RootLayout>
+        </CartProvider>
+      </MockedProvider>,
     );
     const html = container.querySelector('html');
 

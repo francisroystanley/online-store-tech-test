@@ -1,19 +1,15 @@
-import axios from 'axios';
-import { print } from 'graphql';
+'use server';
+
 import { GetProductsDocument, Product as TProduct } from '@/graphql/generated';
+import createApolloClient from '@/lib/apollo';
 import Product from './Product';
 
 const ProductListing = async () => {
   try {
+    const client = createApolloClient();
     const {
-      data: {
-        data: { products },
-      },
-    } = await axios.post(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/graphql`,
-      { query: print(GetProductsDocument) },
-      { headers: { 'Content-Type': 'application/json' } },
-    );
+      data: { products },
+    } = await client.query({ query: GetProductsDocument });
 
     return (
       <div data-testid="product-grid">

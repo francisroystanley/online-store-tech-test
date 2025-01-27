@@ -1,0 +1,6 @@
+mutation SubmitOrder($input: CheckoutInput!) {
+  submitOrder(input: $input) {
+    success
+    errors
+  }
+}

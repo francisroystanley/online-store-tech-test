@@ -1,7 +1,8 @@
-import axios from 'axios';
 import { render, screen } from '@testing-library/react';
 import ProductListing from '@/components/ProductListing';
 import { CartProvider } from '@/providers/cart.context';
+import createApolloClient from '@/lib/apollo';
+import { mockProducts } from '@/__mocks__/fixtures';
 
 jest.mock('lucide-react', () => ({
   Star: () => <div data-testid="star-gray">Star</div>,
@@ -16,25 +17,11 @@ jest.mock('next/image', () => ({
   },
 }));
 
-jest.mock('axios');
+jest.mock('@/lib/apollo');
 
-const mockedAxios = axios as jest.Mocked<typeof axios>;
-const mockProducts = [
-  {
-    id: '1',
-    name: 'Test Product 1',
-    description: 'Description 1',
-    price: 99.99,
-    image: 'test1.jpg',
-  },
-  {
-    id: '2',
-    name: 'Test Product 2',
-    description: 'Description 2',
-    price: 149.99,
-    image: 'test2.jpg',
-  },
-];
+type MockedApolloClient = ReturnType<typeof createApolloClient>;
+
+const mockedCreateApolloClient = createApolloClient as jest.MockedFunction<typeof createApolloClient>;
 
 describe('ProductListing', () => {
   const renderWithProvider = (component: React.ReactNode) => {
@@ -46,21 +33,15 @@ describe('ProductListing', () => {
   });
 
   it('renders products successfully', async () => {
-    mockedAxios.post.mockResolvedValueOnce({
-      data: {
-        data: {
-          products: mockProducts,
-        },
-      },
-    });
+    mockedCreateApolloClient.mockReturnValue({
+      query: jest.fn().mockResolvedValue({
+        data: { products: mockProducts },
+      }),
+    } as unknown as MockedApolloClient);
+
     const { container } = renderWithProvider(await ProductListing());
 
     expect(screen.getByTestId('product-grid')).toBeInTheDocument();
-    expect(mockedAxios.post).toHaveBeenCalledWith(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/graphql`,
-      expect.any(Object),
-      expect.any(Object),
-    );
 
     const productElements = container.querySelectorAll('[data-testid="product"]');
 
@@ -69,7 +50,9 @@ describe('ProductListing', () => {
 
   it('renders error message when API call fails with Error instance', async () => {
     const errorMessage = 'Failed to fetch products';
-    mockedAxios.post.mockRejectedValueOnce(new Error(errorMessage));
+    mockedCreateApolloClient.mockReturnValue({
+      query: jest.fn().mockRejectedValue(new Error(errorMessage)),
+    } as unknown as MockedApolloClient);
 
     renderWithProvider(await ProductListing());
 
@@ -77,7 +60,9 @@ describe('ProductListing', () => {
   });
 
   it('renders generic error message when API call fails with non-Error', async () => {
-    mockedAxios.post.mockRejectedValueOnce('Unknown error');
+    mockedCreateApolloClient.mockReturnValue({
+      query: jest.fn().mockRejectedValue('Unknown error'),
+    } as unknown as MockedApolloClient);
 
     renderWithProvider(await ProductListing());
 

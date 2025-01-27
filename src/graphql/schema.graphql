@@ -26,7 +26,34 @@ type CartProduct {
   quantity: Int!
 }
 
+input OrderProduct {
+  id: ID!
+  title: String!
+  price: Float!
+  quantity: Int!
+}
+
+input CheckoutInput {
+  email: String!
+  shippingName: String!
+  address: String!
+  cardName: String!
+  cardNumber: String!
+  expiry: String!
+  cvc: String!
+  orders: [OrderProduct!]!
+}
+
+type SubmitOrderResponse {
+  success: Boolean!
+  errors: [String!]
+}
+
 type Query {
   products: [Product!]!
   product(id: ID!): Product
+}
+
+type Mutation {
+  submitOrder(input: CheckoutInput!): SubmitOrderResponse!
 }

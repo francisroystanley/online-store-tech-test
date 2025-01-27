@@ -1,65 +1,83 @@
 'use client';
 
-import { createContext, useContext, useMemo, useState } from 'react';
-import { number, object, string } from 'valibot';
+import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import { CartProduct } from '@/graphql/generated';
-
-const CartSchema = object({
-  id: string(),
-  title: string(),
-  price: number(),
-  formattedPrice: string(),
-  image: string(),
-  quantity: number(),
-});
+import { cartSchema } from '@/schema';
+import { parse, ValiError } from 'valibot';
 
 type CartContext = {
   items: CartProduct[];
   totalAmount: number;
   totalItems: number;
   addItem: (item: CartProduct) => void;
+  clearCart: () => void;
   updateQuantity: (id: string, quantity: number) => void;
   removeItem: (id: string) => void;
 };
 
+type Props = {
+  children: React.ReactNode;
+  initialCart?: CartProduct[];
+};
+
 const CartContext = createContext<CartContext | null>(null);
 
-const CartProvider = ({ children }: { children: React.ReactNode }) => {
-  const [cart, setCart] = useState<CartProduct[]>([]);
+const CartProvider = ({ children, initialCart = [] }: Props) => {
+  const [cart, setCart] = useState<CartProduct[]>(initialCart);
   const totalAmount = useMemo(() => cart.reduce((acc, item) => acc + item.price * item.quantity, 0), [cart]);
   const totalItems = useMemo(() => cart.reduce((acc, item) => acc + item.quantity, 0), [cart]);
 
-  const addItem = (item: CartProduct) => {
-    if (item.quantity < 1) {
-      return;
-    }
+  const validateItem = (item: CartProduct) => {
+    try {
+      parse(cartSchema, item);
+    } catch (error) {
+      if (error instanceof ValiError) {
+        const newErrors: Record<string, string> = {};
 
-    setCart((prevState) => {
-      const existingItem = prevState.find((cartItem) => cartItem.id === item.id);
+        error.issues.forEach((issue) => {
+          const path = issue.path?.[0].key as string;
+          newErrors[path] ||= issue.message;
+        });
 
-      if (existingItem) {
-        return prevState.map((cartItem) =>
-          cartItem.id === item.id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem,
-        );
+        throw new Error(JSON.stringify(newErrors));
       }
-
-      return [...prevState, item];
-    });
+    }
   };
 
-  const updateQuantity = (id: string, quantity: number) => {
+  const addItem = useCallback((item: CartProduct) => {
+    validateItem(item);
+
+    setCart((prevState) => {
+      const newState = JSON.parse(JSON.stringify(prevState));
+      const existingItem = newState.find((cartItem: CartProduct) => cartItem.id === item.id);
+
+      if (existingItem) {
+        existingItem.quantity += item.quantity;
+
+        return newState;
+      }
+
+      return [...newState, item];
+    });
+  }, []);
+
+  const clearCart = useCallback(() => {
+    setCart([]);
+  }, []);
+
+  const updateQuantity = useCallback((id: string, quantity: number) => {
     const newQuantity = Math.max(Math.min(quantity, 50), 1);
 
     setCart((prevState) => prevState.map((item) => (item.id === id ? { ...item, quantity: newQuantity } : item)));
-  };
+  }, []);
 
-  const removeItem = (id: string) => {
+  const removeItem = useCallback((id: string) => {
     setCart((prevState) => prevState.filter((item) => item.id !== id));
-  };
+  }, []);
 
   const memoizedCart = useMemo(
-    () => ({ items: cart, addItem, updateQuantity, removeItem, totalAmount, totalItems }),
-    [cart, totalAmount, totalItems],
+    () => ({ items: cart, addItem, clearCart, updateQuantity, removeItem, totalAmount, totalItems }),
+    [addItem, cart, clearCart, removeItem, totalAmount, totalItems, updateQuantity],
   );
 
   return <CartContext.Provider value={memoizedCart}>{children}</CartContext.Provider>;
@@ -74,4 +92,4 @@ const useCartContext = () => {
 
   return ctx;
 };
-export { CartProvider, CartSchema, useCartContext };
+export { CartProvider, useCartContext };

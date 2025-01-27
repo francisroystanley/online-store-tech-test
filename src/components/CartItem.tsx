@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { Trash2 } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { FocusEvent, useEffect, useRef } from 'react';
 import { CartProduct } from '@/graphql/generated';
 import { useCartContext } from '@/providers/cart.context';
 
@@ -14,7 +14,7 @@ const CartItem = ({ item }: Props) => {
   const { updateQuantity, removeItem } = useCartContext();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+  const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
     const value = Number.isNaN(Number(e.target.value)) ? 1 : Number(e.target.value);
 
     updateQuantity(item.id, value);

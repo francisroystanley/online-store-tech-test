@@ -6,9 +6,19 @@ jest.mock('@apollo/client', () => ({
   ...jest.requireActual('@apollo/client'),
   ApolloProvider: jest.fn(({ children }) => <div data-testid="apollo-provider">{children}</div>),
   ApolloClient: jest.fn(() => ({
-    uri: '/api/graphql',
+    link: {
+      uri: `${process.env.NEXT_PUBLIC_BASE_URL}/api/graphql`,
+      credentials: 'same-origin',
+    },
     cache: new InMemoryCache(),
+    defaultOptions: {
+      query: {
+        errorPolicy: 'all',
+        fetchPolicy: 'cache-first',
+      },
+    },
   })),
+  HttpLink: jest.fn(({ uri, credentials }) => ({ uri, credentials })),
 }));
 
 describe('Apollo Provider', () => {
@@ -33,8 +43,17 @@ describe('Apollo Provider', () => {
     expect(ApolloProvider).toHaveBeenCalledWith(
       expect.objectContaining({
         client: expect.objectContaining({
-          uri: '/api/graphql',
+          link: expect.objectContaining({
+            uri: `${process.env.NEXT_PUBLIC_BASE_URL}/api/graphql`,
+            credentials: 'same-origin',
+          }),
           cache: expect.any(Object),
+          defaultOptions: {
+            query: {
+              errorPolicy: 'all',
+              fetchPolicy: 'cache-first',
+            },
+          },
         }),
       }),
       expect.any(Object),
