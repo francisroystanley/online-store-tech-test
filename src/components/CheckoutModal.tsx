@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { parse, ValiError } from 'valibot';
 import { useSubmitOrderMutation } from '@/graphql/generated';
 import { useCartContext } from '@/providers/cart.context';
@@ -17,18 +17,20 @@ type Props = {
   setOpen: (open: boolean) => void;
 };
 
+const initialFormData = {
+  email: '',
+  shippingName: '',
+  address: '',
+  cardNumber: '',
+  cardName: '',
+  expiry: '',
+  cvc: '',
+};
+
 const CheckoutModal = ({ onConfirm, open, setOpen }: Props) => {
-  const { clearCart, items, totalAmount } = useCartContext();
+  const { clearCart, items, totalAmount, totalItems } = useCartContext();
   const formRef = useRef<HTMLFormElement>(null);
-  const [formData, setFormData] = useState<CheckoutFormData>({
-    email: '',
-    shippingName: '',
-    address: '',
-    cardNumber: '',
-    cardName: '',
-    expiry: '',
-    cvc: '',
-  });
+  const [formData, setFormData] = useState<CheckoutFormData>(initialFormData);
   const [errors, setErrors] = useState<CheckoutFormErrors>({});
   const [submitOrder, { loading }] = useSubmitOrderMutation({
     variables: {
@@ -62,6 +64,7 @@ const CheckoutModal = ({ onConfirm, open, setOpen }: Props) => {
       setErrors({});
 
       await submitOrder();
+      setFormData(initialFormData);
       clearCart();
       onConfirm();
     } catch (error) {
@@ -79,14 +82,14 @@ const CheckoutModal = ({ onConfirm, open, setOpen }: Props) => {
   };
 
   const footer = (
-    <Button
-      className="w-full"
-      color="secondary"
-      label="Confirm Order"
-      onClick={handleConfirmClick}
-      disabled={loading}
-    />
+    <Button className="w-full" color="secondary" label="Confirm Order" onClick={handleConfirmClick} loading={loading} />
   );
+
+  useEffect(() => {
+    if (totalItems === 0) {
+      setOpen(false);
+    }
+  }, [setOpen, totalItems]);
 
   return (
     <Modal footer={footer} open={open} setOpen={setOpen} title="Checkout">

@@ -27,7 +27,11 @@ const CartModal = ({ onCheckout, open, setOpen }: Props) => {
   return (
     <Modal footer={footer} open={open} setOpen={setOpen} title="Cart">
       <div className="flex flex-col mt-3">
-        {isEmptyCart ? <p>No items in cart</p> : items.map((item) => <CartItem key={item.id} item={item} />)}
+        {isEmptyCart ? (
+          <p className="text-center py-2">No items in cart</p>
+        ) : (
+          items.map((item) => <CartItem key={item.id} item={item} />)
+        )}
       </div>
     </Modal>
   );

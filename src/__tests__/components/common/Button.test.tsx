@@ -1,6 +1,10 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import Button from '@/components/common/Button';
 
+jest.mock('lucide-react', () => ({
+  LoaderCircle: () => <div data-testid="loader-circle">LoaderCircle</div>,
+}));
+
 describe('Button', () => {
   const mockOnClick = jest.fn();
 

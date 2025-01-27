@@ -8,6 +8,7 @@ import { SubmitOrderDocument } from '@/graphql/generated';
 
 jest.mock('lucide-react', () => ({
   X: () => <div data-testid="close-icon">X</div>,
+  LoaderCircle: () => <div data-testid="loader-circle">LoaderCircle</div>,
 }));
 
 jest.mock('@/components/CartItem', () => ({
@@ -156,7 +157,11 @@ describe('CheckoutModal', () => {
 
     fillForm();
 
-    fireEvent.click(screen.getByText('Confirm Order'));
+    const confirmButton = screen.getByText('Confirm Order').parentElement;
+
+    if (!confirmButton) throw new Error('Confirm button not found');
+
+    fireEvent.click(confirmButton);
     await screen.findByRole('form');
 
     expect(mockOnConfirm).toHaveBeenCalled();

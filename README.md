@@ -44,3 +44,18 @@ For bonus points, if time permits, we'd be over the moon to see:
 2. Setup your project using the above dependencies
 3. Build your project using the provided design as a guide
 4. Share your Git Repository when your ready
+
+## Live Demo
+
+Check out the live demo of the Online Store Tech Test at:
+[https://online-store-tech-test-lyart.vercel.app/](https://online-store-tech-test-lyart.vercel.app/)
+
+The demo showcases a fully functional e-commerce store with:
+
+- Server-side rendered product listings
+- Shopping cart functionality
+- Checkout process with form validation
+- Order confirmation flow
+- Responsive design following the Figma specifications
+- GraphQL API implementation
+- Containerized with Docker
